@@ -1,146 +1,149 @@
--- LocalScript: Fake "Dupe Pets" UI for Grow a Garden (local/entertainment use only)
--- Помести в StarterGui (LocalScript)
+-- LocalScript: Fake "Dupe Pets" UI (обновлённый дизайн)
+-- StarterGui
 
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 
--- Точный массив питомцев (собранный из открытых гайдов/википедий, можно дополнять)
+-- Питомцы
 local pets = {
-    "Bacon Pig", "Bagel Bunny", "Bald Eagle", "Bear Bee", "Bee", "Black Bunny",
-    "Blood Hedgehog", "Blood Kiwi", "Mizuchi", "Bunny", "Golden Lab", "Cat", "Chicken",
-    "Deer", "Spotted Deer", "Orange Tabby", "Pig", "Rooster", "Monkey",
-    "Cow", "Polar Bear", "Sea Otter", "Silver Monkey", "Turtle", "Dragonfly",
-    "Snail", "Giant Ant", "Red Fox", "Hedgehog", "Golden Goose", "Kitsune",
-    "Disco Bee", "T-Rex"
+    "Bacon Pig","Bagel Bunny","Bald Eagle","Bear Bee","Bee","Black Bunny",
+    "Blood Hedgehog","Blood Kiwi","Mizuchi","Bunny","Golden Lab","Cat","Chicken",
+    "Deer","Spotted Deer","Orange Tabby","Pig","Rooster","Monkey",
+    "Cow","Polar Bear","Sea Otter","Silver Monkey","Turtle","Dragonfly",
+    "Snail","Giant Ant","Red Fox","Hedgehog","Golden Goose","Kitsune",
+    "Disco Bee","T-Rex"
 }
 
--- Текст сообщения для кика
 local kickMessage = "You are sucessfuly duped your units,please rejoin"
 
--- Удаляем старый GUI, если он есть
+-- Удаляем старый UI
 local existing = player:FindFirstChildWhichIsA("PlayerGui") and player.PlayerGui:FindFirstChild("GrowAGardenUI")
-if existing then
-    existing:Destroy()
-end
+if existing then existing:Destroy() end
 
--- Создаём ScreenGui
+-- ScreenGui
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "Grow A GardenUI"
+screenGui.Name = "GrowAGardenUI"
 screenGui.ResetOnSpawn = false
 screenGui.Parent = player:WaitForChild("PlayerGui")
 
--- Основной фрейм
+-- Main Frame
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
-mainFrame.Size = UDim2.new(0, 460, 0, 360)
-mainFrame.Position = UDim2.new(0.5, -230, 0.5, -180)
-mainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+mainFrame.Size = UDim2.new(0, 480, 0, 370)
+mainFrame.Position = UDim2.new(0.5, -240, 0.5, -185)
+mainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 mainFrame.BorderSizePixel = 0
 mainFrame.Parent = screenGui
 
 local uiCorner = Instance.new("UICorner", mainFrame)
-uiCorner.CornerRadius = UDim.new(0, 12)
+uiCorner.CornerRadius = UDim.new(0, 16)
 
--- Заголовок
+local stroke = Instance.new("UIStroke", mainFrame)
+stroke.Thickness = 2
+stroke.Color = Color3.fromRGB(80, 140, 255)
+
+-- Title
 local title = Instance.new("TextLabel")
-title.Name = "Title"
-title.Size = UDim2.new(1, 0, 0, 44)
+title.Size = UDim2.new(1, 0, 0, 48)
 title.BackgroundTransparency = 1
-title.Position = UDim2.new(0, 0, 0, 0)
-title.Text = "Grow a Garden — Dupe Menu"
-title.Font = Enum.Font.SourceSansBold
+title.Text = "🌱 Grow a Garden — Dupe Menu"
+title.Font = Enum.Font.GothamBold
 title.TextSize = 22
-title.TextColor3 = Color3.fromRGB(235, 235, 235)
+title.TextColor3 = Color3.fromRGB(230, 240, 255)
 title.Parent = mainFrame
 
--- Вкладки
+-- Tabs
 local tabsFrame = Instance.new("Frame")
-tabsFrame.Size = UDim2.new(1, -24, 0, 44)
-tabsFrame.Position = UDim2.new(0, 12, 0, 56)
+tabsFrame.Size = UDim2.new(1, -24, 0, 42)
+tabsFrame.Position = UDim2.new(0, 12, 0, 52)
 tabsFrame.BackgroundTransparency = 1
 tabsFrame.Parent = mainFrame
 
 local function makeTab(name, x)
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0, 140, 1, 0)
+    btn.Size = UDim2.new(0, 150, 1, 0)
     btn.Position = UDim2.new(0, x, 0, 0)
-    btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    btn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     btn.Text = name
-    btn.Font = Enum.Font.SourceSans
+    btn.Font = Enum.Font.Gotham
     btn.TextSize = 16
-    btn.TextColor3 = Color3.fromRGB(220, 220, 220)
+    btn.TextColor3 = Color3.fromRGB(210, 210, 220)
     btn.Parent = tabsFrame
     local corner = Instance.new("UICorner", btn)
-    corner.CornerRadius = UDim.new(0, 8)
+    corner.CornerRadius = UDim.new(0, 10)
+    local stroke = Instance.new("UIStroke", btn)
+    stroke.Color = Color3.fromRGB(70, 120, 255)
+    stroke.Thickness = 1
     return btn
 end
 
 local tab1 = makeTab("Dupe Pets", 0)
-local tab2 = makeTab("Auto Farm", 156)
-tab2.Active = false  -- визуально неактивна
+local tab2 = makeTab("Auto Farm", 160)
+tab2.Active = false
 
--- Область списка питомцев
+-- List Frame
 local listFrame = Instance.new("Frame")
 listFrame.Size = UDim2.new(1, -24, 0, 220)
-listFrame.Position = UDim2.new(0, 12, 0, 120)
-listFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+listFrame.Position = UDim2.new(0, 12, 0, 104)
+listFrame.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
 listFrame.Parent = mainFrame
 local corner2 = Instance.new("UICorner", listFrame)
-corner2.CornerRadius = UDim.new(0, 8)
+corner2.CornerRadius = UDim.new(0, 10)
+local stroke2 = Instance.new("UIStroke", listFrame)
+stroke2.Color = Color3.fromRGB(60, 60, 80)
+stroke2.Thickness = 1
 
 local scroll = Instance.new("ScrollingFrame")
 scroll.Size = UDim2.new(1, -20, 1, -20)
 scroll.Position = UDim2.new(0, 10, 0, 10)
 scroll.BackgroundTransparency = 1
 scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+scroll.ScrollBarThickness = 6
 scroll.Parent = listFrame
-scroll.ScrollBarThickness = 8
 
 local uiList = Instance.new("UIListLayout", scroll)
 uiList.Padding = UDim.new(0, 8)
 uiList.SortOrder = Enum.SortOrder.LayoutOrder
 
--- Выбранный питомец
+-- Selected Pet Label
 local selectedPet = nil
 local selectedLabel = Instance.new("TextLabel")
 selectedLabel.Size = UDim2.new(1, -24, 0, 28)
-selectedLabel.Position = UDim2.new(0, 12, 0, 350)
+selectedLabel.Position = UDim2.new(0, 12, 0, 335)
 selectedLabel.BackgroundTransparency = 1
 selectedLabel.Text = "Selected: (none)"
-selectedLabel.Font = Enum.Font.SourceSans
+selectedLabel.Font = Enum.Font.Gotham
 selectedLabel.TextSize = 16
-selectedLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+selectedLabel.TextColor3 = Color3.fromRGB(180, 200, 255)
 selectedLabel.Parent = mainFrame
 
--- Обновление CanvasSize
+-- Update CanvasSize
 local function updateCanvas()
-    local total = uiList.AbsoluteContentSize.Y
-    scroll.CanvasSize = UDim2.new(0, 0, 0, total + 12)
+    scroll.CanvasSize = UDim2.new(0, 0, 0, uiList.AbsoluteContentSize.Y + 12)
 end
 
--- Создаём кнопки питомцев
-for i, petName in ipairs(pets) do
+-- Pet Buttons
+for _, petName in ipairs(pets) do
     local btn = Instance.new("TextButton")
     btn.Size = UDim2.new(1, -10, 0, 36)
-    btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    btn.Font = Enum.Font.SourceSans
+    btn.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+    btn.Font = Enum.Font.Gotham
     btn.TextSize = 15
     btn.Text = petName
-    btn.TextColor3 = Color3.fromRGB(240, 240, 240)
+    btn.TextColor3 = Color3.fromRGB(230, 230, 240)
     btn.Parent = scroll
     local c = Instance.new("UICorner", btn)
-    c.CornerRadius = UDim.new(0, 6)
+    c.CornerRadius = UDim.new(0, 8)
 
     btn.MouseButton1Click:Connect(function()
         selectedPet = petName
         selectedLabel.Text = "Selected: " .. petName
-        -- Подсветка выбранной кнопки
         for _, child in ipairs(scroll:GetChildren()) do
             if child:IsA("TextButton") then
-                child.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+                child.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
             end
         end
-        btn.BackgroundColor3 = Color3.fromRGB(80, 80, 130)
+        btn.BackgroundColor3 = Color3.fromRGB(90, 120, 180)
     end)
 
     task.spawn(function()
@@ -149,84 +152,71 @@ for i, petName in ipairs(pets) do
     end)
 end
 
--- Кнопка Dupe Unit
+-- Dupe Button
 local dupeBtn = Instance.new("TextButton")
 dupeBtn.Size = UDim2.new(1, -24, 0, 48)
 dupeBtn.Position = UDim2.new(0, 12, 1, -74)
-dupeBtn.BackgroundColor3 = Color3.fromRGB(60, 120, 60)
-dupeBtn.Font = Enum.Font.SourceSansBold
+dupeBtn.BackgroundColor3 = Color3.fromRGB(60, 150, 90)
+dupeBtn.Font = Enum.Font.GothamBold
 dupeBtn.TextSize = 18
-dupeBtn.Text = "Dupe Unit"
+dupeBtn.Text = "✨ Dupe Unit"
 dupeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 dupeBtn.Parent = mainFrame
 local corner3 = Instance.new("UICorner", dupeBtn)
-corner3.CornerRadius = UDim.new(0, 8)
+corner3.CornerRadius = UDim.new(0, 10)
+local stroke3 = Instance.new("UIStroke", dupeBtn)
+stroke3.Color = Color3.fromRGB(100, 200, 150)
+stroke3.Thickness = 2
 
--- Инфо-лейбл
+-- Info Label
 local infoLabel = Instance.new("TextLabel")
 infoLabel.Size = UDim2.new(1, -24, 0, 28)
 infoLabel.Position = UDim2.new(0, 12, 1, -104)
 infoLabel.BackgroundTransparency = 1
 infoLabel.Text = ""
-infoLabel.Font = Enum.Font.SourceSansBold
+infoLabel.Font = Enum.Font.GothamBold
 infoLabel.TextSize = 18
-infoLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+infoLabel.TextColor3 = Color3.fromRGB(210, 210, 220)
 infoLabel.Parent = mainFrame
 
--- Не позволяем запускать два процесса одновременно
+-- Логика дюпа (фейк)
 local dupeInProgress = false
-
 dupeBtn.MouseButton1Click:Connect(function()
     if dupeInProgress then return end
-
     if not selectedPet then
-        infoLabel.Text = "Select a pet from the list first."
+        infoLabel.Text = "⚠ Select a pet first!"
         return
     end
-
     dupeInProgress = true
-    dupeBtn.Active = false
-    dupeBtn.AutoButtonColor = false
-    dupeBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+    dupeBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
     infoLabel.Text = "Starting dupe for: " .. selectedPet
 
-    -- Фейковые шаги
-    task.wait(0.5)
+    task.wait(0.7)
     infoLabel.Text = "Preparing duplication..."
     task.wait(0.7)
     infoLabel.Text = "Syncing units..."
     task.wait(0.8)
     infoLabel.Text = "Finalizing..."
 
-    -- 10-секундный отсчёт
-    local seconds = 10
-    for i = seconds, 1, -1 do
-        infoLabel.Text = "Dupe in progress... " .. i .. "s"
+    for i = 10, 1, -1 do
+        infoLabel.Text = "⏳ Dupe in progress... " .. i .. "s"
         task.wait(1)
     end
 
-    -- Фейковая анти-дуп система
-    infoLabel.TextColor3 = Color3.fromRGB(255, 80, 80) -- красный
+    infoLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
     infoLabel.Text = "⚠ Anti-Dupe System detected!"
     task.wait(1.5)
 
-    infoLabel.TextColor3 = Color3.fromRGB(255, 220, 80) -- жёлтый
-    infoLabel.Text = "Duped pet will have another age and size due to Anti-Dupe System"
-    task.wait(2.5)
+    infoLabel.TextColor3 = Color3.fromRGB(255, 200, 80)
+    infoLabel.Text = "Pet modified due to Anti-Dupe System..."
+    task.wait(2)
 
-    infoLabel.TextColor3 = Color3.fromRGB(200, 200, 200) -- вернуть серый цвет
-    infoLabel.Text = "Done. Finalizing..."
-    task.wait(0.4)
-
-    -- Кик игрока с сообщением
     player:Kick(kickMessage)
 end)
 
--- Делаем MainFrame перетаскиваемым
+-- Dragging
 local UserInputService = game:GetService("UserInputService")
-
-local dragging = false
-local dragInput, dragStart, startPos
+local dragging, dragInput, dragStart, startPos
 
 local function update(input)
     local delta = input.Position - dragStart
@@ -239,29 +229,20 @@ local function update(input)
 end
 
 mainFrame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or 
-       input.UserInputType == Enum.UserInputType.Touch then
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
         dragging = true
         dragStart = input.Position
         startPos = mainFrame.Position
-
         input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
+            if input.UserInputState == Enum.UserInputState.End then dragging = false end
         end)
     end
 end)
 
 mainFrame.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement or 
-       input.UserInputType == Enum.UserInputType.Touch then
-        dragInput = input
-    end
+    if input.UserInputType == Enum.UserInputType.MouseMovement then dragInput = input end
 end)
 
 UserInputService.InputChanged:Connect(function(input)
-    if input == dragInput and dragging then
-        update(input)
-    end
+    if input == dragInput and dragging then update(input) end
 end)
